@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-light: #ffffff;
+    --text-light: #231123;
+    --muted-light: #7C9EB2;
+  }
+  
+  .dark {
+    --bg-dark: #231123;
+    --text-dark: #ffffff;
+    --muted-dark: #7C9EB2;
+  }
+
+  body {
+    @apply font-body bg-white text-[#231123] selection:bg-pepdf-primary selection:text-white transition-colors duration-300;
+  }
+
+  .dark body {
+    @apply bg-pepdf-black text-white;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-lg border border-white/20 dark:border-white/10;
+  }
+  
+  .btn-primary {
+    @apply bg-pepdf-primary text-white px-6 py-2.5 rounded-full hover:shadow-[0_0_20px_rgba(82,40,204,0.4)] transition-all duration-300 active:scale-95 flex items-center gap-2;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-pepdf-primary/40 hover:bg-pepdf-primary/60 rounded-full transition-colors;
+}

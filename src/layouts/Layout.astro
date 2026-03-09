@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = "PePDF - Your all-in-one digital toolbox for PDFs and QR codes." } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<script is:inline>
+			const getThemePreference = () => {
+				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+					return localStorage.getItem('theme');
+				}
+				return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+			};
+			const isDark = getThemePreference() === 'dark';
+			document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+
+			if (typeof localStorage !== 'undefined') {
+				const observer = new MutationObserver(() => {
+					const isDark = document.documentElement.classList.contains('dark');
+					localStorage.setItem('theme', isDark ? 'dark' : 'light');
+				});
+				observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+			}
+		</script>
+	</head>
+	<body class="min-h-screen selection:bg-pepdf-primary selection:text-white transition-colors duration-300 dark:bg-pepdf-black dark:text-white bg-slate-50">
+    <div class="fixed inset-0 -z-10 pointer-events-none opacity-30 dark:opacity-50 overflow-hidden">
+      <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-pepdf-primary/20 blur-[120px] rounded-full"></div>
+      <div class="absolute top-[20%] -right-[10%] w-[35%] h-[35%] bg-pepdf-blue-light/20 blur-[100px] rounded-full"></div>
+      <div class="absolute -bottom-[10%] left-[20%] w-[45%] h-[45%] bg-pepdf-purple-dark/20 blur-[140px] rounded-full"></div>
+    </div>
+		<slot />
+	</body>
+</html>

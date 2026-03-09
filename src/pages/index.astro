@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar';
+import Hero from '../components/Hero';
+import ToolGrid from '../components/ToolGrid';
+import Footer from '../components/Footer';
+---
+
+<Layout title="PePDF | Modern Digital Toolbox">
+	<Navbar client:load />
+	<main>
+		<Hero client:load />
+		<ToolGrid client:visible />
+	</main>
+	<Footer client:visible />
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		width: 100%;
+		max-width: 100%;
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+</style>
