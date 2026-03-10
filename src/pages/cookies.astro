@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import ComingSoonPanel from '../components/ComingSoonPanel';
+---
+
+<Layout title="PePDF | Cookies" description="Cookie settings and usage details for PePDF.">
+  <Navbar client:load />
+  <main>
+    <ComingSoonPanel
+      client:load
+      title="Cookie Notice"
+      subtitle="Cookie usage and preference controls are being finalized for this section."
+      ctaHref="/"
+      ctaLabel="Return home"
+    />
+  </main>
+  <Footer client:visible />
+</Layout>

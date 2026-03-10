@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import ComingSoonPanel from '../components/ComingSoonPanel';
+---
+
+<Layout title="PePDF | Terms" description="Terms and conditions for using PePDF products.">
+  <Navbar client:load />
+  <main>
+    <ComingSoonPanel
+      client:load
+      title="Terms of Service"
+      subtitle="Our terms are being drafted and will be available soon with complete service conditions."
+      ctaHref="/"
+      ctaLabel="Back to home"
+    />
+  </main>
+  <Footer client:visible />
+</Layout>

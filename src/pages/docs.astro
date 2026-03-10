@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import ComingSoonPanel from '../components/ComingSoonPanel';
+---
+
+<Layout title="PePDF | Documentation" description="Documentation and usage guides for PePDF tools.">
+  <Navbar client:load />
+  <main>
+    <ComingSoonPanel
+      client:load
+      title="Documentation"
+      subtitle="This section is being structured with guides, workflows, and best practices."
+      ctaHref="/pdf-tools"
+      ctaLabel="Explore tools"
+    />
+  </main>
+  <Footer client:visible />
+</Layout>

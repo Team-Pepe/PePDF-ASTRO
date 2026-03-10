@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import ProtectPage from '../components/pages/ProtectPage';
+---
+
+<Layout title="PePDF | Protect" description="Encrypt, lock, unlock, and redact PDF documents with secure controls.">
+  <Navbar client:load />
+  <main>
+    <ProtectPage client:load />
+  </main>
+  <Footer client:visible />
+</Layout>

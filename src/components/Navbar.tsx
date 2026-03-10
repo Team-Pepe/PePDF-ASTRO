@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import ThemeToggle from './ThemeToggle';
-import { FileText, QrCode, Shield, RefreshCw, Layers } from 'lucide-react';
+import { FileText, QrCode, Shield, RefreshCw } from 'lucide-react';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -14,10 +14,10 @@ export default function Navbar() {
   }, []);
 
   const navItems = [
-    { label: 'PDF Tools', icon: <FileText className="w-4 h-4" /> },
-    { label: 'QR Generator', icon: <QrCode className="w-4 h-4" /> },
-    { label: 'Convert', icon: <RefreshCw className="w-4 h-4" /> },
-    { label: 'Protect', icon: <Shield className="w-4 h-4" /> },
+    { label: 'PDF Tools', href: '/pdf-tools', icon: <FileText className="w-4 h-4" /> },
+    { label: 'QR Generator', href: '/qr-generator', icon: <QrCode className="w-4 h-4" /> },
+    { label: 'Convert', href: '/convert', icon: <RefreshCw className="w-4 h-4" /> },
+    { label: 'Protect', href: '/protect', icon: <Shield className="w-4 h-4" /> },
   ];
 
   return (
@@ -27,32 +27,33 @@ export default function Navbar() {
           isScrolled ? 'bg-white/80 dark:bg-pepdf-midnight/80 shadow-2xl backdrop-blur-xl' : 'bg-white/40 dark:bg-pepdf-midnight/40 backdrop-blur-lg'
         }`}
       >
-        <div className="flex items-center gap-2 group cursor-pointer">
+        <a href="/" className="flex items-center gap-2 group cursor-pointer" aria-label="Go to homepage">
           <div className="w-10 h-10 bg-pepdf-primary rounded-xl flex items-center justify-center text-white font-bold text-xl transition-all duration-300 group-hover:rotate-12 group-hover:scale-110 shadow-lg shadow-pepdf-primary/40">
             P
           </div>
           <span className="text-xl font-display font-bold text-pepdf-purple-dark dark:text-white group-hover:text-pepdf-primary transition-colors">
             PePDF
           </span>
-        </div>
+        </a>
 
         <div className="hidden md:flex items-center gap-1">
           {navItems.map((item) => (
-            <button
+            <a
               key={item.label}
+              href={item.href}
               className="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-pepdf-primary dark:hover:text-pepdf-primary hover:bg-pepdf-primary/5 dark:hover:bg-pepdf-primary/10 transition-all flex items-center gap-2"
             >
               {item.icon}
               {item.label}
-            </button>
+            </a>
           ))}
         </div>
 
         <div className="flex items-center gap-3">
           <ThemeToggle />
-          <button className="btn-primary md:flex hidden">
+          <a href="/pdf-tools" className="btn-primary md:flex hidden">
             Get Started
-          </button>
+          </a>
         </div>
       </div>
     </nav>

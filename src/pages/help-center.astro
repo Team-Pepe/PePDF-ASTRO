@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import ComingSoonPanel from '../components/ComingSoonPanel';
+---
+
+<Layout title="PePDF | Help Center" description="Help center and support resources for PePDF users.">
+  <Navbar client:load />
+  <main>
+    <ComingSoonPanel
+      client:load
+      title="Help Center"
+      subtitle="We are building a support hub with FAQs, troubleshooting, and onboarding guides."
+      ctaHref="/"
+      ctaLabel="Back to home"
+    />
+  </main>
+  <Footer client:visible />
+</Layout>
