@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, UploadCloud } from 'lucide-react';
 import { ReactNode } from 'react';
-import ToolCard from './ToolCard';
-import FAQAccordion, { FaqItem } from './FAQAccordion';
+import ToolCard from '../shared/ToolCard';
+import FAQAccordion, { FaqItem } from '../shared/FAQAccordion';
 
 export interface SuiteTool {
   title: string;
