@@ -50,8 +50,14 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          <a
+            href="/login"
+            className="hidden md:inline-flex px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-pepdf-primary dark:hover:text-pepdf-primary hover:bg-pepdf-primary/5 dark:hover:bg-pepdf-primary/10 transition-all"
+          >
+            Log In
+          </a>
           <ThemeToggle />
-          <a href="/pdf-tools" className="btn-primary md:flex hidden">
+          <a href="/register" className="btn-primary md:flex hidden">
             Get Started
           </a>
         </div>

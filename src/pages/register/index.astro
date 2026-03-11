@@ -1,0 +1,10 @@
+---
+import AuthLayout from '../../layouts/AuthLayout.astro';
+import RegisterPage from '../../components/auth/register/RegisterPage';
+---
+
+<AuthLayout title="PePDF | Register" description="Create a PePDF account and start using the document platform.">
+  <main>
+    <RegisterPage client:only="react" />
+  </main>
+</AuthLayout>

@@ -1,0 +1,10 @@
+---
+import AuthLayout from '../../layouts/AuthLayout.astro';
+import LoginPage from '../../components/auth/login/LoginPage';
+---
+
+<AuthLayout title="PePDF | Log In" description="Log in to your PePDF workspace and continue processing documents.">
+  <main>
+    <LoginPage client:only="react" />
+  </main>
+</AuthLayout>
