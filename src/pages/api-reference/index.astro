@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
+import ComingSoonPanel from '../../components/shared/ComingSoonPanel';
+---
+
+<Layout title="PePDF | API Reference" description="API reference for automation and integrations.">
+  <Navbar client:load />
+  <main>
+    <ComingSoonPanel
+      client:load
+      title="API Reference"
+      subtitle="API endpoints and integration details will be published soon."
+      ctaHref="/"
+      ctaLabel="Return to homepage"
+    />
+  </main>
+  <Footer client:visible />
+</Layout>

@@ -1,6 +1,28 @@
 import { Github, Twitter, Linkedin, Mail, Heart } from 'lucide-react';
 
 export default function Footer() {
+  const socialLinks = [
+    { label: 'GitHub', href: 'https://github.com', icon: Github },
+    { label: 'Twitter', href: 'https://x.com', icon: Twitter },
+    { label: 'LinkedIn', href: 'https://linkedin.com', icon: Linkedin },
+    { label: 'Email', href: '/contact', icon: Mail },
+  ];
+
+  const productLinks = [
+    { label: 'PDF Tools', href: '/pdf-tools' },
+    { label: 'QR Generator', href: '/qr-generator' },
+    { label: 'Convert', href: '/convert' },
+    { label: 'Protect', href: '/protect' },
+  ];
+
+  const resourceLinks = [
+    { label: 'Documentation', href: '/docs' },
+    { label: 'API Reference', href: '/api-reference' },
+    { label: 'Security Whitepaper', href: '/security' },
+    { label: 'Help Center', href: '/help-center' },
+    { label: 'Privacy Policy', href: '/privacy' },
+  ];
+
   return (
     <footer className="py-20 px-6 border-t border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-pepdf-black/50 transition-colors">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
@@ -17,19 +39,34 @@ export default function Footer() {
             Empowering users with intuitive, secure, and lightning-fast digital tools. Simplify your document workflow today.
           </p>
           <div className="flex items-center gap-4">
-            {[Github, Twitter, Linkedin, Mail].map((Icon, i) => (
-              <button key={i} className="p-2 rounded-xl bg-slate-200 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:text-pepdf-primary dark:hover:text-pepdf-primary hover:bg-pepdf-primary/10 transition-all duration-300">
+            {socialLinks.map((social) => {
+              const Icon = social.icon;
+
+              return (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  aria-label={social.label}
+                  target={social.href.startsWith('http') ? '_blank' : undefined}
+                  rel={social.href.startsWith('http') ? 'noreferrer' : undefined}
+                  className="p-2 rounded-xl bg-slate-200 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:text-pepdf-primary dark:hover:text-pepdf-primary hover:bg-pepdf-primary/10 transition-all duration-300"
+                >
                 <Icon className="w-5 h-5" />
-              </button>
-            ))}
+                </a>
+              );
+            })}
           </div>
         </div>
 
         <div>
           <h4 className="font-display font-bold text-pepdf-purple-dark dark:text-white mb-6 uppercase text-xs tracking-widest">Products</h4>
           <ul className="flex flex-col gap-4 text-slate-500 dark:text-slate-400 text-sm">
-            {['PDF Tools', 'QR Generator', 'Word to PDF', 'File Conversion', 'Security Tools'].map(item => (
-              <li key={item} className="hover:text-pepdf-primary transition-colors cursor-pointer">{item}</li>
+            {productLinks.map((item) => (
+              <li key={item.label}>
+                <a href={item.href} className="hover:text-pepdf-primary transition-colors">
+                  {item.label}
+                </a>
+              </li>
             ))}
           </ul>
         </div>
@@ -37,8 +74,12 @@ export default function Footer() {
         <div>
           <h4 className="font-display font-bold text-pepdf-purple-dark dark:text-white mb-6 uppercase text-xs tracking-widest">Resources</h4>
           <ul className="flex flex-col gap-4 text-slate-500 dark:text-slate-400 text-sm">
-            {['Documentation', 'API Reference', 'Security Whitepaper', 'Help Center', 'Privacy Policy'].map(item => (
-              <li key={item} className="hover:text-pepdf-primary transition-colors cursor-pointer">{item}</li>
+            {resourceLinks.map((item) => (
+              <li key={item.label}>
+                <a href={item.href} className="hover:text-pepdf-primary transition-colors">
+                  {item.label}
+                </a>
+              </li>
             ))}
           </ul>
         </div>
@@ -64,9 +105,9 @@ export default function Footer() {
           © {new Date().getFullYear()} PePDF Platform. Made with <Heart className="w-4 h-4 text-red-500 fill-current animate-pulse" /> by PePDF Team.
         </p>
         <div className="flex items-center gap-8 text-slate-400 dark:text-slate-500 text-sm">
-          <span className="hover:text-pepdf-primary cursor-pointer transition-colors">Privacy</span>
-          <span className="hover:text-pepdf-primary cursor-pointer transition-colors">Terms</span>
-          <span className="hover:text-pepdf-primary cursor-pointer transition-colors">Cookies</span>
+          <a href="/privacy" className="hover:text-pepdf-primary transition-colors">Privacy</a>
+          <a href="/terms" className="hover:text-pepdf-primary transition-colors">Terms</a>
+          <a href="/cookies" className="hover:text-pepdf-primary transition-colors">Cookies</a>
         </div>
       </div>
     </footer>

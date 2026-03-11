@@ -1,0 +1,14 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
+import ConvertPage from '../../components/tool-suites/convert/ConvertPage';
+---
+
+<Layout title="PePDF | Convert" description="Convert documents and images between formats with quality-focused processing.">
+  <Navbar client:load />
+  <main>
+    <ConvertPage client:load />
+  </main>
+  <Footer client:visible />
+</Layout>

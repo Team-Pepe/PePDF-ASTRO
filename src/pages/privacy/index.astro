@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
+import ComingSoonPanel from '../../components/shared/ComingSoonPanel';
+---
+
+<Layout title="PePDF | Privacy" description="Privacy policy and data handling information.">
+  <Navbar client:load />
+  <main>
+    <ComingSoonPanel
+      client:load
+      title="Privacy Policy"
+      subtitle="Our legal and privacy terms are currently being prepared for publication."
+      ctaHref="/"
+      ctaLabel="Go to home"
+    />
+  </main>
+  <Footer client:visible />
+</Layout>

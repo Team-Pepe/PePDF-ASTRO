@@ -1,5 +1,5 @@
-import ToolCard from './ToolCard';
-import { QrCode, FileText, Image as ImageIcon, FileCode, Shield, RefreshCw, Key, Download } from 'lucide-react';
+import ToolCard from '../shared/ToolCard';
+import { QrCode, FileText, Image as ImageIcon, Shield, RefreshCw, Key, Download } from 'lucide-react';
 
 export default function ToolGrid() {
   const tools = [
@@ -61,22 +61,6 @@ export default function ToolGrid() {
               delay={index * 0.1}
             />
           ))}
-        </div>
-
-        <div className="mt-20 glass-card bg-pepdf-primary p-12 rounded-3xl text-center relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2 transition-transform group-hover:scale-150 duration-700"></div>
-          <div className="relative z-10 flex flex-col items-center gap-6">
-            <h3 className="text-3xl md:text-5xl font-display font-bold text-white">
-              Ready to process your files?
-            </h3>
-            <p className="text-pepdf-blue-light max-w-xl text-lg opacity-80">
-              Join thousands of users who trust PePDF for their daily digital needs. No registration required for basic features.
-            </p>
-            <button className="bg-white text-pepdf-primary px-8 py-4 rounded-full font-bold shadow-2xl shadow-pepdf-primary/50 hover:bg-slate-100 transition-all active:scale-95 flex items-center gap-2 group">
-              Get Started for Free
-              <Download className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
-            </button>
-          </div>
         </div>
       </div>
     </section>
