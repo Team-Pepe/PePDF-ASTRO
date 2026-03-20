@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import ThemeToggle from './ThemeToggle';
-import { FileText, QrCode, Shield, RefreshCw } from 'lucide-react';
+import { FileText, QrCode, Shield, RefreshCw, LogOut, User } from 'lucide-react';
+import { useAuth, useAuthActions } from '../../hooks/useAuth';
+import { authService } from '../../services/auth';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isAuthenticated, user } = useAuth();
+  const { clearUser } = useAuthActions();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -12,6 +16,17 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.warn('Logout error:', error);
+    } finally {
+      clearUser();
+      window.location.href = '/';
+    }
+  };
 
   const navItems = [
     { label: 'PDF Tools', href: '/pdf-tools', icon: <FileText className="w-4 h-4" /> },
@@ -50,16 +65,34 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <a
-            href="/login"
-            className="hidden md:inline-flex px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-pepdf-primary dark:hover:text-pepdf-primary hover:bg-pepdf-primary/5 dark:hover:bg-pepdf-primary/10 transition-all"
-          >
-            Log In
-          </a>
+          {isAuthenticated && user ? (
+            <>
+              <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300">
+                <User className="w-4 h-4" />
+                <span>{user.email}</span>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="hidden md:inline-flex px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-500/5 dark:hover:bg-red-500/10 transition-all items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Log Out
+              </button>
+            </>
+          ) : (
+            <>
+              <a
+                href="/login"
+                className="hidden md:inline-flex px-4 py-2 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-pepdf-primary dark:hover:text-pepdf-primary hover:bg-pepdf-primary/5 dark:hover:bg-pepdf-primary/10 transition-all"
+              >
+                Log In
+              </a>
+              <a href="/register" className="btn-primary md:flex hidden">
+                Get Started
+              </a>
+            </>
+          )}
           <ThemeToggle />
-          <a href="/register" className="btn-primary md:flex hidden">
-            Get Started
-          </a>
         </div>
       </div>
     </nav>
