@@ -11,9 +11,12 @@ import {
   UserPlus,
   Workflow,
   Zap,
+  AlertCircle,
 } from 'lucide-react';
 import AuthLoader from './AuthLoader';
 import ThemeToggle from '../layout/ThemeToggle';
+import { authService } from '../../services/auth';
+import { useAuth, useAuthActions } from '../../hooks/useAuth';
 
 type AuthMode = 'login' | 'register';
 
@@ -200,8 +203,14 @@ export default function AuthShell({ initialMode }: AuthShellProps) {
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const submitTimerRef = useRef<number | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const content = modeContent[mode];
+
+  // Use auth store
+  useAuth(); // Subscribe to auth state changes
+  const authActions = useAuthActions();
 
   useEffect(() => {
     const handlePopState = () => {
@@ -239,8 +248,9 @@ export default function AuthShell({ initialMode }: AuthShellProps) {
     window.history.pushState({}, '', nextMode === 'login' ? '/login' : '/register');
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError(null);
     setHasSubmitted(false);
     setIsSubmitting(true);
 
@@ -248,10 +258,67 @@ export default function AuthShell({ initialMode }: AuthShellProps) {
       window.clearTimeout(submitTimerRef.current);
     }
 
-    submitTimerRef.current = window.setTimeout(() => {
+    try {
+      if (!formRef.current) return;
+
+      const formData = new FormData(formRef.current);
+      const data = Object.fromEntries(formData.entries()) as Record<string, string>;
+
+      if (mode === 'login') {
+        // Login: send email and password
+        const result = await authService.login({
+          email: data.email,
+          password: data.password,
+        });
+
+        // Store user in auth store
+        authActions.setUser({
+          id: result.id,
+          email: result.email,
+          username: result.username,
+        });
+
+        // Show success message
+        submitTimerRef.current = window.setTimeout(() => {
+          setIsSubmitting(false);
+          setHasSubmitted(true);
+
+          // Redirect after 2 seconds
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+        }, 1600);
+      } else {
+        // Register: send all fields
+        const result = await authService.register({
+          username: data.fullName,
+          email: data.email,
+          password: data.password,
+        });
+
+        // Store user in auth store
+        authActions.setUser({
+          id: result.id,
+          email: result.email,
+          username: result.username,
+        });
+
+        // Show success message
+        submitTimerRef.current = window.setTimeout(() => {
+          setIsSubmitting(false);
+          setHasSubmitted(true);
+
+          // Redirect after 2 seconds
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+        }, 1600);
+      }
+    } catch (err) {
       setIsSubmitting(false);
-      setHasSubmitted(true);
-    }, 1600);
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Auth error:', err);
+    }
   };
 
   return (
@@ -472,7 +539,7 @@ export default function AuthShell({ initialMode }: AuthShellProps) {
                 </p>
               </div>
 
-              <form className="space-y-5" onSubmit={handleSubmit}>
+              <form className="space-y-5" onSubmit={handleSubmit} ref={formRef}>
                 {content.fields.map((field) => (
                   <label key={field.name} className="block">
                     <span className="auth-label">{field.label}</span>
@@ -517,6 +584,28 @@ export default function AuthShell({ initialMode }: AuthShellProps) {
                     </>
                   )}
                 </button>
+
+                <AnimatePresence initial={false}>
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.25 }}
+                      className="rounded-2xl bg-red-500/10 border border-red-500/20 px-4 py-4 flex items-start gap-3"
+                    >
+                      <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
+                      <div>
+                        <p className="font-semibold text-red-700 dark:text-red-400">
+                          Authentication failed
+                        </p>
+                        <p className="text-sm text-red-700/80 dark:text-red-300/80 leading-relaxed">
+                          {error}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <AnimatePresence initial={false}>
                   {hasSubmitted && (

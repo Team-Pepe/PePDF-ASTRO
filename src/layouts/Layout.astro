@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import AuthGuard from '../components/shared/AuthGuard';
 
 interface Props {
 	title: string;
@@ -38,6 +39,7 @@ const { title, description = "PePDF - Your all-in-one digital toolbox for PDFs a
 		</script>
 	</head>
 	<body class="min-h-screen selection:bg-pepdf-primary selection:text-white transition-colors duration-300 dark:bg-pepdf-black dark:text-white bg-slate-50">
+    <AuthGuard client:load />
     <div class="fixed inset-0 -z-10 pointer-events-none opacity-30 dark:opacity-50 overflow-hidden">
       <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-pepdf-primary/20 blur-[120px] rounded-full"></div>
       <div class="absolute top-[20%] -right-[10%] w-[35%] h-[35%] bg-pepdf-blue-light/20 blur-[100px] rounded-full"></div>

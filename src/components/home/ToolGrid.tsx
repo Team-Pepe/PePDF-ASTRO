@@ -1,5 +1,5 @@
 import ToolCard from '../shared/ToolCard';
-import { QrCode, FileText, Image as ImageIcon, Shield, RefreshCw, Key, Download } from 'lucide-react';
+import { QrCode, FileText, Image as ImageIcon, Shield, RefreshCw, Key } from 'lucide-react';
 
 export default function ToolGrid() {
   const tools = [
