@@ -25,6 +25,13 @@ interface AuthResponse {
   message?: string;
 }
 
+interface LoginResponse {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+  user: AuthResponse;
+}
+
 interface ErrorResponse {
   detail: string | { msg: string }[];
 }
@@ -49,10 +56,19 @@ class AuthService {
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
     try {
+      // Inject Authorization header manually if token exists in localStorage
+      const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+      const headers = new Headers(options.headers || {});
+      
+      if (token && !headers.has('Authorization')) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+
       return await fetch(url, {
         ...options,
+        headers,
         signal: controller.signal,
-        credentials: 'include', // Important: Send cookies with requests
+        credentials: 'omit', // Stop relying on Docker cookie passing, use explicit header
       });
     } finally {
       clearTimeout(timeoutId);
@@ -99,7 +115,15 @@ class AuthService {
         );
       }
 
-      return await response.json();
+      const data = (await response.json()) as LoginResponse;
+      
+      // Save tokens directly to local storage to bypass cookie issues
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('refresh_token', data.refresh_token);
+      }
+
+      return data.user;
     } catch (error) {
       return this.handleError(error);
     }
@@ -192,6 +216,11 @@ class AuthService {
     } catch (error) {
       console.warn('Logout error:', error);
       // Continue with logout even if request fails
+    } finally {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+      }
     }
   }
 }
