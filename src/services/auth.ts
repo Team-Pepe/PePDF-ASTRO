@@ -4,8 +4,8 @@
  * Uses credentials: 'include' to automatically send/receive cookies
  */
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-const API_TIMEOUT = parseInt(import.meta.env.VITE_API_TIMEOUT || '10000', 10);
+const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+const API_TIMEOUT = parseInt(import.meta.env.PUBLIC_API_TIMEOUT || '10000', 10);
 
 interface LoginRequest {
   email: string;

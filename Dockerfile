@@ -3,17 +3,17 @@
 # ==========================================
 FROM node:20-alpine AS builder
 
-# ARG para build-time variables (Vite necesita estas)
-ARG VITE_API_URL=http://localhost:8000
-ARG VITE_API_TIMEOUT=10000
-ARG VITE_APP_NAME=PePDF
-ARG VITE_APP_VERSION=0.0.1
+# ARG para build-time variables (Vite/Astro necesita estas)
+ARG PUBLIC_API_URL=http://localhost:8000
+ARG PUBLIC_API_TIMEOUT=10000
+ARG PUBLIC_APP_NAME=PePDF
+ARG PUBLIC_APP_VERSION=0.0.1
 
-# Convertir ARG a ENV para que Vite las vea durante el build
-ENV VITE_API_URL=$VITE_API_URL
-ENV VITE_API_TIMEOUT=$VITE_API_TIMEOUT
-ENV VITE_APP_NAME=$VITE_APP_NAME
-ENV VITE_APP_VERSION=$VITE_APP_VERSION
+# Convertir ARG a ENV para que Vite/Astro las vea durante el build
+ENV PUBLIC_API_URL=$PUBLIC_API_URL
+ENV PUBLIC_API_TIMEOUT=$PUBLIC_API_TIMEOUT
+ENV PUBLIC_APP_NAME=$PUBLIC_APP_NAME
+ENV PUBLIC_APP_VERSION=$PUBLIC_APP_VERSION
 
 RUN corepack enable
 WORKDIR /app
