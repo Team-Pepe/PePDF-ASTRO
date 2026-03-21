@@ -3,22 +3,25 @@
 # ==========================================
 FROM node:20-alpine AS builder
 
-# Habilitar corepack para usar pnpm de manera nativa sin instalar globalmente con npm
+# ARG para build-time variables (Vite necesita estas)
+ARG VITE_API_URL=http://localhost:8000
+ARG VITE_API_TIMEOUT=10000
+ARG VITE_APP_NAME=PePDF
+ARG VITE_APP_VERSION=0.0.1
+
+# Convertir ARG a ENV para que Vite las vea durante el build
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_API_TIMEOUT=$VITE_API_TIMEOUT
+ENV VITE_APP_NAME=$VITE_APP_NAME
+ENV VITE_APP_VERSION=$VITE_APP_VERSION
+
 RUN corepack enable
-
-# Establecer nuestro directorio base dentro del contenedor
 WORKDIR /app
-
-# Copiar manifiestos de dependencias primero para aprovechar el caché de capas de Docker
 COPY package.json pnpm-lock.yaml ./
-
-# Instalar dependencias exactas usando pnpm (congelando el lockfile)
 RUN pnpm install --frozen-lockfile
-
-# Copiar el resto del código y archivos de configuración
 COPY . .
 
-# Compilar la aplicación (genera el sitio web servible en la carpeta "dist/")
+# Build con variables inyectadas en el HTML
 RUN pnpm run build
 
 
@@ -27,17 +30,9 @@ RUN pnpm run build
 # ==========================================
 FROM nginx:alpine AS runner
 
-# Remover la página por defecto de Nginx
 RUN rm -rf /usr/share/nginx/html/*
-
-# Copiar nuestra configuración personalizada de Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Copiar únicamente los archivos estáticos desde la etapa "builder"
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Exponer el puerto 80 (puerto interno del contenedor por defecto para Nginx)
 EXPOSE 80
-
-# Iniciar el servidor de Nginx y mantenerlo corriendo en primer plano
 CMD ["nginx", "-g", "daemon off;"]
