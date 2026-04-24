@@ -1,6 +1,7 @@
 import { FileType, FileImage, FileText, RefreshCw, Copy, Gauge } from 'lucide-react';
 import ToolSuitePage from '../ToolSuitePage';
 import ImageToPdfUploader from './ImageToPdfUploader';
+import PdfToImageUploader from './PdfToImageUploader';
 
 export default function ConvertPage() {
   return (
@@ -27,6 +28,7 @@ export default function ConvertPage() {
             description: 'Export pages to high-resolution image outputs for social and presentations.',
             color: '#7C9EB2',
             icon: <FileType className="w-8 h-8" />,
+            href: '#pdf-to-image',
           },
           {
             title: 'Word to PDF',
@@ -72,6 +74,7 @@ export default function ConvertPage() {
         ]}
       />
       <ImageToPdfUploader />
+      <PdfToImageUploader />
     </>
   );
 }

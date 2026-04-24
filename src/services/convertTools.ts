@@ -56,6 +56,44 @@ class ConvertToolsService {
 
     return response.blob();
   }
+
+  async pdfToImages(files: File[]): Promise<Blob> {
+    if (!files.length) {
+      throw new Error('Please select at least one PDF');
+    }
+
+    const formData = new FormData();
+    files.forEach((file) => formData.append('files', file));
+
+    let response: Response;
+    try {
+      response = await this.fetchWithTimeout(`${this.baseUrl}/convert-tools/pdf-to-image`, {
+        method: 'POST',
+        body: formData,
+      });
+    } catch (error: any) {
+      if (error?.name === 'AbortError') {
+        throw new Error('Conversion request timed out');
+      }
+      throw new Error('Unable to connect to conversion service');
+    }
+
+    if (!response.ok) {
+      const fallback = `Conversion failed with status ${response.status}`;
+      let message = fallback;
+      try {
+        const data = await response.json();
+        if (typeof data?.detail === 'string') {
+          message = data.detail;
+        }
+      } catch {
+        // Keep fallback message when JSON parsing fails.
+      }
+      throw new Error(message);
+    }
+
+    return response.blob();
+  }
 }
 
 export const convertToolsService = new ConvertToolsService();
