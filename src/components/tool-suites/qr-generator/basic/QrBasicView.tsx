@@ -1,12 +1,48 @@
 import { useState } from 'react';
-import { Link2, MessageSquare, QrCode } from 'lucide-react';
+import { MessageSquare, QrCode } from 'lucide-react';
 import QrLocalNav from '../shared/QrLocalNav';
 
 export default function QrBasicView() {
-  const [mode, setMode] = useState<'text' | 'link'>('text');
   const [payload, setPayload] = useState('');
   const [size, setSize] = useState('512');
-  const [showPreview, setShowPreview] = useState(false);
+  const [qrImageUrl, setQrImageUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const generatePreview = async () => {
+    if (!payload.trim()) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:8000/api/tool-suites/qr-generator/basic', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data: payload,
+          size: parseInt(size, 10),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate QR');
+      }
+
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      setQrImageUrl(imageUrl);
+    } catch (error) {
+      console.error('Error generating QR:', error);
+      alert('Error generating QR code. Is the backend running?');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClear = () => {
+    setPayload('');
+    setQrImageUrl(null);
+  };
 
   return (
     <>
@@ -22,33 +58,6 @@ export default function QrBasicView() {
               Quick setup to generate QR from plain text or links. This view is focused for speed.
             </p>
 
-            <div className="flex flex-wrap gap-3 mb-6">
-              <button
-                type="button"
-                onClick={() => setMode('text')}
-                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all inline-flex items-center gap-2 ${
-                  mode === 'text'
-                    ? 'bg-pepdf-primary text-white'
-                    : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300'
-                }`}
-              >
-                <MessageSquare className="w-4 h-4" />
-                Text
-              </button>
-              <button
-                type="button"
-                onClick={() => setMode('link')}
-                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all inline-flex items-center gap-2 ${
-                  mode === 'link'
-                    ? 'bg-pepdf-primary text-white'
-                    : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300'
-                }`}
-              >
-                <Link2 className="w-4 h-4" />
-                Link
-              </button>
-            </div>
-
             <div className="space-y-5">
               <div>
                 <label className="auth-label">QR Content</label>
@@ -56,7 +65,7 @@ export default function QrBasicView() {
                   rows={4}
                   value={payload}
                   onChange={(event) => setPayload(event.target.value)}
-                  placeholder={mode === 'text' ? 'Write your message or short note' : 'https://your-link.com'}
+                  placeholder="Write your message, short note or link"
                   className="auth-input resize-none"
                 />
               </div>
@@ -74,13 +83,13 @@ export default function QrBasicView() {
                 <button
                   type="button"
                   className="btn-primary"
-                  onClick={() => setShowPreview(true)}
-                  disabled={!payload.trim()}
+                  onClick={generatePreview}
+                  disabled={!payload.trim() || loading}
                 >
                   <QrCode className="w-4 h-4" />
-                  Generate Preview
+                  {loading ? 'Generating...' : 'Generate QR'}
                 </button>
-                <button type="button" className="btn-secondary" onClick={() => setPayload('')}>
+                <button type="button" className="btn-secondary" onClick={handleClear}>
                   Clear
                 </button>
               </div>
@@ -88,22 +97,23 @@ export default function QrBasicView() {
           </div>
 
           <aside className="lg:col-span-2 glass-card bg-white/70 dark:bg-white/5 rounded-3xl p-7 border border-slate-200/80 dark:border-white/10">
-            <h2 className="text-xl font-display font-bold text-pepdf-purple-dark dark:text-white mb-4">Preview</h2>
+            <h2 className="text-xl font-display font-bold text-pepdf-purple-dark dark:text-white mb-4">Output</h2>
 
-            <div className="rounded-2xl border border-dashed border-slate-300 dark:border-white/15 min-h-[280px] flex items-center justify-center p-4 bg-white/70 dark:bg-black/20">
-              {showPreview ? (
-                <div className="text-center">
-                  <div className="w-28 h-28 rounded-xl bg-slate-200 dark:bg-white/10 mx-auto mb-4 flex items-center justify-center">
-                    <QrCode className="w-10 h-10 text-pepdf-primary" />
-                  </div>
-                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">QR Placeholder ({size})</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    Mode: {mode === 'text' ? 'Text' : 'Link'}
-                  </p>
+            <div className="rounded-2xl border border-dashed border-slate-300 dark:border-white/15 min-h-[280px] flex flex-col items-center justify-center p-4 bg-white/70 dark:bg-black/20">
+              {qrImageUrl ? (
+                <div className="text-center w-full">
+                  <img src={qrImageUrl} alt="Generated QR Code" className="max-w-full h-auto mx-auto rounded-lg shadow-sm mb-4" style={{maxHeight: '300px'}} />
+                  <a 
+                    href={qrImageUrl} 
+                    download="qrcode.png" 
+                    className="text-sm font-semibold text-pepdf-primary hover:underline"
+                  >
+                    Download PNG
+                  </a>
                 </div>
               ) : (
                 <p className="text-sm text-slate-500 dark:text-slate-400 text-center max-w-[16rem]">
-                  Fill content and click Generate Preview to render the future QR result here.
+                  Fill content and click Generate QR to render the result here.
                 </p>
               )}
             </div>

@@ -10,14 +10,55 @@ export default function QrAdvancedView() {
   const [logoShape, setLogoShape] = useState<'circular' | 'rounded'>('circular');
   const [logoSize, setLogoSize] = useState(30);
   const [whiteMargin, setWhiteMargin] = useState(3);
-  const [logoName, setLogoName] = useState('');
-  const [built, setBuilt] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [qrImageUrl, setQrImageUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const readiness = useMemo(() => {
     if (!data.trim()) return 'Missing QR content';
-    if (logoName) return 'Ready with logo';
+    if (logoFile) return 'Ready with logo';
     return 'Ready without logo';
-  }, [data, logoName]);
+  }, [data, logoFile]);
+
+  const generateAdvancedQr = async () => {
+    if (!data.trim()) return;
+    
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('data', data);
+      formData.append('error_correction', correction);
+      formData.append('logo_shape', logoShape);
+      formData.append('logo_size_percent', logoSize.toString());
+      formData.append('white_margin', whiteMargin.toString());
+      
+      if (logoFile) {
+        formData.append('logo', logoFile);
+      }
+
+      const response = await fetch('http://localhost:8000/api/tool-suites/qr-generator/advanced', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate advanced QR');
+      }
+
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      setQrImageUrl(imageUrl);
+    } catch (error) {
+      console.error('Error generating advanced QR:', error);
+      alert('Error generating QR code. Is the backend running?');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReset = () => {
+    setQrImageUrl(null);
+  };
 
   return (
     <>
@@ -98,25 +139,25 @@ export default function QrAdvancedView() {
                 <label className="flex items-center gap-3 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 bg-white/70 dark:bg-black/20 px-4 py-3 cursor-pointer hover:border-pepdf-primary/50 transition-colors">
                   <UploadCloud className="w-5 h-5 text-pepdf-primary" />
                   <span className="text-sm text-slate-600 dark:text-slate-300">
-                    {logoName || 'Select PNG or SVG file'}
+                    {logoFile?.name || 'Select PNG or SVG file'}
                   </span>
                   <input
                     type="file"
                     accept=".png,.svg,image/png,image/svg+xml"
                     className="hidden"
-                    onChange={(event) => setLogoName(event.target.files?.[0]?.name ?? '')}
+                    onChange={(event) => setLogoFile(event.target.files?.[0] ?? null)}
                   />
                 </label>
               </div>
             </div>
 
             <div className="pt-7 flex flex-wrap gap-3">
-              <button type="button" className="btn-primary" onClick={() => setBuilt(true)} disabled={!data.trim()}>
+              <button type="button" className="btn-primary" onClick={generateAdvancedQr} disabled={!data.trim() || loading}>
                 <SlidersHorizontal className="w-4 h-4" />
-                Build Preview
+                {loading ? 'Building...' : 'Build QR'}
               </button>
-              <button type="button" className="btn-secondary" onClick={() => setBuilt(false)}>
-                Reset Preview
+              <button type="button" className="btn-secondary" onClick={handleReset}>
+                Reset Output
               </button>
             </div>
           </div>
@@ -132,15 +173,20 @@ export default function QrAdvancedView() {
               <p className="text-xs text-slate-500 dark:text-slate-400">White margin: {whiteMargin}</p>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 min-h-[220px] bg-white/80 dark:bg-black/20 flex items-center justify-center p-4 text-center">
-              {built ? (
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  Preview placeholder rendered.
-                  <br />
-                  Next step is wiring this with real QR generation logic.
-                </p>
+            <div className="mt-4 rounded-2xl border border-dashed border-slate-300 dark:border-white/15 min-h-[220px] bg-white/80 dark:bg-black/20 flex flex-col items-center justify-center p-4 text-center">
+              {qrImageUrl ? (
+                <>
+                  <img src={qrImageUrl} alt="Advanced QR Code" className="max-w-full h-auto rounded-lg shadow-sm mb-4" style={{maxHeight: '250px'}} />
+                  <a 
+                    href={qrImageUrl} 
+                    download="advanced_qrcode.png" 
+                    className="text-sm font-semibold text-pepdf-primary hover:underline"
+                  >
+                    Download PNG
+                  </a>
+                </>
               ) : (
-                <p className="text-sm text-slate-500 dark:text-slate-400">Build Preview to see notebook-like output simulation.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Build QR to see notebook-like output simulation.</p>
               )}
             </div>
           </aside>
