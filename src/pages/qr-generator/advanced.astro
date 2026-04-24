@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
+import QrAdvancedView from '../../components/tool-suites/qr-generator/advanced/QrAdvancedView';
+---
+
+<Layout
+  title="PePDF | QR Advanced Studio"
+  description="Notebook-inspired QR controls with logo shape, error correction, and margin settings."
+>
+  <Navbar client:load />
+  <main>
+    <QrAdvancedView client:load />
+  </main>
+  <Footer client:visible />
+</Layout>
