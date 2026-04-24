@@ -4,7 +4,6 @@ import QrLocalNav from '../shared/QrLocalNav';
 
 export default function QrBasicView() {
   const [payload, setPayload] = useState('');
-  const [size, setSize] = useState('512');
   const [qrImageUrl, setQrImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -20,7 +19,7 @@ export default function QrBasicView() {
         },
         body: JSON.stringify({
           data: payload,
-          size: parseInt(size, 10),
+          size: 1024,
         }),
       });
 
@@ -68,15 +67,6 @@ export default function QrBasicView() {
                   placeholder="Write your message, short note or link"
                   className="auth-input resize-none"
                 />
-              </div>
-
-              <div>
-                <label className="auth-label">Output Size</label>
-                <select value={size} onChange={(event) => setSize(event.target.value)} className="auth-input">
-                  <option value="256">256 x 256</option>
-                  <option value="512">512 x 512</option>
-                  <option value="1024">1024 x 1024</option>
-                </select>
               </div>
 
               <div className="flex flex-wrap gap-3 pt-2">

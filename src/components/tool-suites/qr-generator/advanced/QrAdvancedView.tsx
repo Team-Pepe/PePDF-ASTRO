@@ -5,7 +5,7 @@ import QrLocalNav from '../shared/QrLocalNav';
 const correctionLevels = ['L', 'M', 'Q', 'H'];
 
 export default function QrAdvancedView() {
-  const [data, setData] = useState('https://www.google.com');
+  const [data, setData] = useState('https://www.example.com');
   const [correction, setCorrection] = useState('H');
   const [logoShape, setLogoShape] = useState<'circular' | 'rounded'>('circular');
   const [logoSize, setLogoSize] = useState(30);
