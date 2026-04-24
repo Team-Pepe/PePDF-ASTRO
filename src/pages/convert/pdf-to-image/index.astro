@@ -1,0 +1,12 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Navbar from '../../../components/layout/Navbar';
+import Footer from '../../../components/layout/Footer';
+import PdfToImagePage from '../../../components/tool-suites/convert/pdf-to-image/PdfToImagePage';
+---
+
+<Layout title="PePDF | PDF to Image" description="Extract pages from PDFs into images with a dedicated, workspace-style interface.">
+  <Navbar client:load />
+  <PdfToImagePage client:load />
+  <Footer client:visible />
+</Layout>
