@@ -9,6 +9,7 @@ export interface SuiteTool {
   description: string;
   color: string;
   icon: ReactNode;
+  href?: string;
 }
 
 interface ToolSuitePageProps {

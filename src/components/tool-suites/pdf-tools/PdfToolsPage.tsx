@@ -1,4 +1,4 @@
-import { FileStack, Minimize2, Scissors, Stamp, FileCheck, FolderArchive } from 'lucide-react';
+import { FileStack, Minimize2, Scissors, FileCheck, FolderArchive } from 'lucide-react';
 import ToolSuitePage from '../ToolSuitePage';
 
 export default function PdfToolsPage() {
@@ -36,12 +36,6 @@ export default function PdfToolsPage() {
           description: 'Drag, rearrange, and remove pages to optimize flow before sharing.',
           color: '#231123',
           icon: <FolderArchive className="w-8 h-8" />,
-        },
-        {
-          title: 'Add Watermark',
-          description: 'Protect identity with text or logo watermarks across selected page ranges.',
-          color: '#5228CC',
-          icon: <Stamp className="w-8 h-8" />,
         },
         {
           title: 'Final Preflight',
