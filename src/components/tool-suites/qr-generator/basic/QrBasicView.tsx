@@ -12,7 +12,8 @@ export default function QrBasicView() {
     
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/tool-suites/qr-generator/basic', {
+      const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_URL}/api/tool-suites/qr-generator/basic`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

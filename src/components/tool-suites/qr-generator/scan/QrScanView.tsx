@@ -78,7 +78,8 @@ export default function QrScanView() {
       const formData = new FormData();
       formData.append('file', file);
       
-      const response = await fetch('http://localhost:8000/api/tool-suites/qr-generator/scan', {
+      const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_URL}/api/tool-suites/qr-generator/scan`, {
         method: 'POST',
         body: formData,
       });

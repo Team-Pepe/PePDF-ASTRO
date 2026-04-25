@@ -1,8 +1,97 @@
-import { useMemo, useState } from 'react';
-import { SlidersHorizontal, UploadCloud } from 'lucide-react';
+import { useMemo, useState, useRef, useEffect } from 'react';
+import { SlidersHorizontal, UploadCloud, ChevronDown, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import QrLocalNav from '../shared/QrLocalNav';
 
-const correctionLevels = ['L', 'M', 'Q', 'H'];
+const correctionLevels = [
+  { value: 'L', label: 'Low (7%)' },
+  { value: 'M', label: 'Medium (15%)' },
+  { value: 'Q', label: 'High (25%)' },
+  { value: 'H', label: 'Maximum (30%) - Logo Recommended' },
+];
+
+const shapeOptions = [
+  { value: 'circular', label: 'Circular' },
+  { value: 'rounded', label: 'Rounded' },
+];
+
+// Custom Select Component
+function CustomSelect({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (val: string) => void;
+  options: { value: string; label: string }[];
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const selectedOption = options.find((opt) => opt.value === value) || options[0];
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <label className="auth-label">{label}</label>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="auth-input flex items-center justify-between w-full text-left"
+      >
+        <span className="block truncate">{selectedOption.label}</span>
+        <ChevronDown className={`w-4 h-4 ml-2 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.15 }}
+            className="absolute z-10 w-full mt-2 bg-white dark:bg-[#231123] border border-slate-200 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden backdrop-blur-xl"
+          >
+            <ul className="py-2">
+              {options.map((option) => (
+                <li key={option.value}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onChange(option.value);
+                      setIsOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2.5 text-sm hover:bg-pepdf-primary/10 hover:text-pepdf-primary transition-colors flex items-center justify-between
+                      ${
+                        value === option.value
+                          ? 'text-pepdf-primary bg-pepdf-primary/5 font-medium'
+                          : 'text-slate-700 dark:text-slate-300'
+                      }
+                    `}
+                  >
+                    <span className="truncate">{option.label}</span>
+                    {value === option.value && <Check className="w-4 h-4" />}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function QrAdvancedView() {
   const [data, setData] = useState('https://www.example.com');
@@ -36,7 +125,8 @@ export default function QrAdvancedView() {
         formData.append('logo', logoFile);
       }
 
-      const response = await fetch('http://localhost:8000/api/tool-suites/qr-generator/advanced', {
+      const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_URL}/api/tool-suites/qr-generator/advanced`, {
         method: 'POST',
         body: formData,
       });
@@ -86,52 +176,57 @@ export default function QrAdvancedView() {
               </div>
 
               <div>
-                <label className="auth-label">Error Correction</label>
-                <select value={correction} onChange={(event) => setCorrection(event.target.value)} className="auth-input">
-                  {correctionLevels.map((level) => (
-                    <option key={level} value={level}>
-                      {level}
-                    </option>
-                  ))}
-                </select>
+                <CustomSelect
+                  label="Error Correction"
+                  value={correction}
+                  onChange={setCorrection}
+                  options={correctionLevels}
+                />
               </div>
 
               <div>
-                <label className="auth-label">Logo Shape</label>
-                <select
+                <CustomSelect
+                  label="Logo Shape"
                   value={logoShape}
-                  onChange={(event) => setLogoShape(event.target.value as 'circular' | 'rounded')}
-                  className="auth-input"
-                >
-                  <option value="circular">Circular</option>
-                  <option value="rounded">Rounded</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="auth-label">Logo Size: {logoSize}%</label>
-                <input
-                  type="range"
-                  min={10}
-                  max={30}
-                  step={1}
-                  value={logoSize}
-                  onChange={(event) => setLogoSize(Number(event.target.value))}
-                  className="w-full accent-pepdf-primary"
+                  onChange={(val) => setLogoShape(val as 'circular' | 'rounded')}
+                  options={shapeOptions}
                 />
               </div>
 
               <div>
-                <label className="auth-label">White Margin: {whiteMargin}</label>
-                <input
-                  type="range"
-                  min={0}
-                  max={3}
-                  step={1}
-                  value={whiteMargin}
-                  onChange={(event) => setWhiteMargin(Number(event.target.value))}
-                  className="w-full accent-pepdf-primary"
-                />
+                <label className="auth-label flex justify-between">
+                  <span>Logo Size</span>
+                  <span className="text-pepdf-primary">{logoSize}%</span>
+                </label>
+                <div className="auth-input h-[52px] flex items-center">
+                  <input
+                    type="range"
+                    min={10}
+                    max={30}
+                    step={1}
+                    value={logoSize}
+                    onChange={(event) => setLogoSize(Number(event.target.value))}
+                    className="w-full accent-pepdf-primary"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="auth-label flex justify-between">
+                  <span>White Margin</span>
+                  <span className="text-pepdf-primary">{whiteMargin}</span>
+                </label>
+                <div className="auth-input h-[52px] flex items-center">
+                  <input
+                    type="range"
+                    min={0}
+                    max={3}
+                    step={1}
+                    value={whiteMargin}
+                    onChange={(event) => setWhiteMargin(Number(event.target.value))}
+                    className="w-full accent-pepdf-primary"
+                  />
+                </div>
               </div>
 
               <div className="md:col-span-2">
@@ -167,8 +262,12 @@ export default function QrAdvancedView() {
 
             <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/75 dark:bg-black/20 p-4 space-y-3">
               <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Status: {readiness}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Correction: {correction}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Shape: {logoShape}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Correction: {correctionLevels.find(l => l.value === correction)?.label}
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Shape: {shapeOptions.find(s => s.value === logoShape)?.label}
+              </p>
               <p className="text-xs text-slate-500 dark:text-slate-400">Logo size: {logoSize}%</p>
               <p className="text-xs text-slate-500 dark:text-slate-400">White margin: {whiteMargin}</p>
             </div>
