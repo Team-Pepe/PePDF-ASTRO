@@ -22,13 +22,16 @@ export default function QrScanView() {
   }, [source]);
 
   const stopCamera = async () => {
-    if (scannerRef.current && scannerRef.current.isScanning) {
-      try {
-        await scannerRef.current.stop();
-        scannerRef.current.clear();
-      } catch (err) {
-        console.error("Error stopping camera", err);
+    if (scannerRef.current) {
+      if (scannerRef.current.isScanning) {
+        try {
+          await scannerRef.current.stop();
+        } catch (err) {
+          console.error("Error stopping camera", err);
+        }
       }
+      scannerRef.current.clear();
+      scannerRef.current = null;
     }
     setIsCameraActive(false);
   };

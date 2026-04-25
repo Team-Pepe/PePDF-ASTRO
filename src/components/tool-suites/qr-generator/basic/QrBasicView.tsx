@@ -30,7 +30,10 @@ export default function QrBasicView() {
 
       const blob = await response.blob();
       const imageUrl = URL.createObjectURL(blob);
-      setQrImageUrl(imageUrl);
+      setQrImageUrl(prev => {
+        if (prev) URL.revokeObjectURL(prev);
+        return imageUrl;
+      });
     } catch (error) {
       console.error('Error generating QR:', error);
       alert('Error generating QR code. Is the backend running?');
