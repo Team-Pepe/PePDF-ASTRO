@@ -1,0 +1,14 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
+import QrBasicView from '../../components/tool-suites/qr-generator/basic/QrBasicView';
+---
+
+<Layout title="PePDF | QR Basic Generator" description="Create QR codes quickly from text or links with a focused basic workflow.">
+  <Navbar client:load />
+  <main>
+    <QrBasicView client:load />
+  </main>
+  <Footer client:visible />
+</Layout>

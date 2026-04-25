@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
+import QrScanView from '../../components/tool-suites/qr-generator/scan/QrScanView';
+---
+
+<Layout
+  title="PePDF | QR Scan Station"
+  description="Decode QR values from uploaded images or camera mode in a dedicated scan workflow."
+>
+  <Navbar client:load />
+  <main>
+    <QrScanView client:load />
+  </main>
+  <Footer client:visible />
+</Layout>
