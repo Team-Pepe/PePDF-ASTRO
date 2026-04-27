@@ -33,6 +33,7 @@ export default function ConvertPage() {
             description: 'Preserve typography and spacing while delivering professional PDF documents.',
             color: '#372554',
             icon: <FileText className="w-8 h-8" />,
+            href: '/convert/word-to-pdf',
           },
           {
             title: 'PDF to Word',
