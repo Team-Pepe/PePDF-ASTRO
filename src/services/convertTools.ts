@@ -1,5 +1,9 @@
-const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = import.meta.env.PUBLIC_API_URL;
 const API_TIMEOUT = parseInt(import.meta.env.PUBLIC_API_TIMEOUT || '30000', 10);
+
+if (!API_URL) {
+  throw new Error('Missing PUBLIC_API_URL. Configure it in environment variables.');
+}
 
 class ConvertToolsService {
   private readonly baseUrl = API_URL;
@@ -106,6 +110,44 @@ class ConvertToolsService {
     let response: Response;
     try {
       response = await this.fetchWithTimeout(`${this.baseUrl}/convert-tools/word-to-pdf`, {
+        method: 'POST',
+        body: formData,
+      });
+    } catch (error: any) {
+      if (error?.name === 'AbortError') {
+        throw new Error('Conversion request timed out');
+      }
+      throw new Error('Unable to connect to conversion service');
+    }
+
+    if (!response.ok) {
+      const fallback = `Conversion failed with status ${response.status}`;
+      let message = fallback;
+      try {
+        const data = await response.json();
+        if (typeof data?.detail === 'string') {
+          message = data.detail;
+        }
+      } catch {
+        // Keep fallback message when JSON parsing fails.
+      }
+      throw new Error(message);
+    }
+
+    return response.blob();
+  }
+
+  async pdfToWord(file: File): Promise<Blob> {
+    if (!file) {
+      throw new Error('Please select a PDF document');
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    let response: Response;
+    try {
+      response = await this.fetchWithTimeout(`${this.baseUrl}/convert-tools/pdf-to-word`, {
         method: 'POST',
         body: formData,
       });

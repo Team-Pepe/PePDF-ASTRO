@@ -40,6 +40,7 @@ export default function ConvertPage() {
             description: 'Recover editable text and structure for quick updates and collaboration.',
             color: '#231123',
             icon: <RefreshCw className="w-8 h-8" />,
+            href: '/convert/pdf-to-word',
           },
           {
             title: 'Batch Convert',
