@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import { ReactNode, type KeyboardEvent } from 'react';
 
 interface ToolCardProps {
   title: string;
@@ -19,6 +19,10 @@ export default function ToolCard({ title, description, icon, color, delay = 0, h
       transition={{ duration: 0.5, delay }}
       whileHover={{ y: -8 }}
       className="group relative cursor-pointer"
+      onClick={handleNavigate}
+      onKeyDown={handleKeyDown}
+      role={href ? 'button' : undefined}
+      tabIndex={href ? 0 : undefined}
     >
       <div className="absolute inset-0 bg-pepdf-primary/10 dark:bg-pepdf-primary/5 rounded-3xl blur-2xl group-hover:blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
       

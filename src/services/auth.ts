@@ -4,8 +4,12 @@
  * Uses credentials: 'include' to automatically send/receive cookies
  */
 
-const API_URL = import.meta.env.PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = import.meta.env.PUBLIC_API_URL;
 const API_TIMEOUT = parseInt(import.meta.env.PUBLIC_API_TIMEOUT || '10000', 10);
+
+if (!API_URL) {
+  throw new Error('Missing PUBLIC_API_URL. Configure it in environment variables.');
+}
 
 interface LoginRequest {
   email: string;
