@@ -82,8 +82,11 @@ export default function EncryptView() {
 
             <div className="rounded-2xl border border-dashed border-slate-300 dark:border-white/15 min-h-[200px] flex flex-col items-center justify-center p-4 bg-white/70 dark:bg-black/20">
               {resultUrl ? (
-                <div className="text-center w-full">
-                  <p className="mb-4">Encrypted file ready</p>
+                <div className="w-full flex flex-col items-center">
+                  <div className="w-full h-[300px] md:h-[400px] mb-4 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-white/50">
+                    <iframe src={resultUrl} className="w-full h-full" title="PDF Preview" />
+                  </div>
+                  <p className="mb-3 font-medium text-slate-700 dark:text-slate-200">Encrypted file ready</p>
                   <a href={resultUrl} download={`encrypted_${file?.name ?? 'file.pdf'}`} className="text-sm font-semibold text-pepdf-primary hover:underline">
                     Download Encrypted PDF
                   </a>
