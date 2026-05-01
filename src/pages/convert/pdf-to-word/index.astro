@@ -1,0 +1,12 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Navbar from '../../../components/layout/Navbar';
+import Footer from '../../../components/layout/Footer';
+import PdfToWordPage from '../../../components/tool-suites/convert/pdf-to-word/PdfToWordPage';
+---
+
+<Layout title="PePDF | PDF to Word" description="Convert PDFs into editable DOCX files with a Docker-ready conversion pipeline.">
+  <Navbar client:load />
+  <PdfToWordPage client:load />
+  <Footer client:visible />
+</Layout>

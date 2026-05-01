@@ -1,0 +1,12 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Navbar from '../../../components/layout/Navbar';
+import Footer from '../../../components/layout/Footer';
+import WordToPdfPage from '../../../components/tool-suites/convert/word-to-pdf/WordToPdfPage';
+---
+
+<Layout title="PePDF | Word to PDF" description="Convert Word documents into PDF using LibreOffice inside a dedicated conversion workspace.">
+  <Navbar client:load />
+  <WordToPdfPage client:load />
+  <Footer client:visible />
+</Layout>
