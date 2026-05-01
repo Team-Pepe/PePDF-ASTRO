@@ -3,12 +3,25 @@ import { Shield, UploadCloud } from 'lucide-react';
 import ProtectLocalNav from '../shared/ProtectLocalNav';
 import { setPermissions } from '../../../../services/protect';
 
+const Toggle = ({ label, checked, onChange }: { label: string; checked: boolean; onChange: (val: boolean) => void }) => (
+  <label className="flex items-center justify-between p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-black/10 cursor-pointer hover:border-pepdf-primary/30 transition-colors">
+    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{label}</span>
+    <div className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${checked ? 'bg-pepdf-primary' : 'bg-slate-300 dark:bg-slate-600'}`}>
+      <div className={`absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform ${checked ? 'translate-x-5' : 'translate-x-0'}`}></div>
+    </div>
+    <input type="checkbox" className="hidden" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+  </label>
+);
+
 export default function PermissionsView() {
   const [file, setFile] = useState<File | null>(null);
-  const [allowPrint, setAllowPrint] = useState(true);
-  const [allowModify, setAllowModify] = useState(false);
-  const [allowCopy, setAllowCopy] = useState(false);
-  const [allowAnnotate, setAllowAnnotate] = useState(false);
+  const [blockPrint, setBlockPrint] = useState(false);
+  const [blockPrintHighRes, setBlockPrintHighRes] = useState(false);
+  const [blockModify, setBlockModify] = useState(false);
+  const [blockCopy, setBlockCopy] = useState(false);
+  const [blockAnnotate, setBlockAnnotate] = useState(false);
+  const [blockFillForms, setBlockFillForms] = useState(false);
+  const [blockAssemble, setBlockAssemble] = useState(false);
   const [ownerPassword, setOwnerPassword] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,10 +43,13 @@ export default function PermissionsView() {
       form.append('file', file);
       form.append('owner_password', ownerPassword);
       form.append('user_password', userPassword);
-      form.append('allow_print', String(allowPrint));
-      form.append('allow_modify', String(allowModify));
-      form.append('allow_copy', String(allowCopy));
-      form.append('allow_annotate', String(allowAnnotate));
+      form.append('block_print', String(blockPrint));
+      form.append('block_print_high_res', String(blockPrintHighRes));
+      form.append('block_modify', String(blockModify));
+      form.append('block_copy', String(blockCopy));
+      form.append('block_annotate', String(blockAnnotate));
+      form.append('block_fill_forms', String(blockFillForms));
+      form.append('block_assemble', String(blockAssemble));
 
       const blob = await setPermissions(form);
       const url = URL.createObjectURL(blob);
@@ -75,23 +91,14 @@ export default function PermissionsView() {
                 </label>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <label className="flex items-center gap-3">
-                  <input type="checkbox" checked={allowPrint} onChange={() => setAllowPrint((s) => !s)} />
-                  <span>Allow Print</span>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input type="checkbox" checked={allowModify} onChange={() => setAllowModify((s) => !s)} />
-                  <span>Allow Modify</span>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input type="checkbox" checked={allowCopy} onChange={() => setAllowCopy((s) => !s)} />
-                  <span>Allow Copy/Extract</span>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input type="checkbox" checked={allowAnnotate} onChange={() => setAllowAnnotate((s) => !s)} />
-                  <span>Allow Annotate</span>
-                </label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Toggle label="Block Print" checked={blockPrint} onChange={setBlockPrint} />
+                <Toggle label="Block High-Res Print" checked={blockPrintHighRes} onChange={setBlockPrintHighRes} />
+                <Toggle label="Block Modify" checked={blockModify} onChange={setBlockModify} />
+                <Toggle label="Block Copy/Extract" checked={blockCopy} onChange={setBlockCopy} />
+                <Toggle label="Block Annotate" checked={blockAnnotate} onChange={setBlockAnnotate} />
+                <Toggle label="Block Fill Forms" checked={blockFillForms} onChange={setBlockFillForms} />
+                <Toggle label="Block Assemble Doc" checked={blockAssemble} onChange={setBlockAssemble} />
               </div>
 
               <div>

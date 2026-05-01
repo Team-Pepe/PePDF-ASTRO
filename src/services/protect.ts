@@ -14,7 +14,11 @@ export async function setPermissions(form: FormData): Promise<Blob> {
     method: 'POST',
     body: form,
   });
-  if (!res.ok) throw new Error('Set permissions failed');
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error('Backend error:', errorText);
+    throw new Error(`Set permissions failed: ${errorText}`);
+  }
   return await res.blob();
 }
 
