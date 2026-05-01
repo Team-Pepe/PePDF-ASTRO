@@ -7,10 +7,11 @@ interface ToolCardProps {
   icon: ReactNode;
   color: string;
   delay?: number;
+  href?: string;
 }
 
-export default function ToolCard({ title, description, icon, color, delay = 0 }: ToolCardProps) {
-  return (
+export default function ToolCard({ title, description, icon, color, delay = 0, href }: ToolCardProps) {
+  const content = (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
@@ -55,4 +56,10 @@ export default function ToolCard({ title, description, icon, color, delay = 0 }:
       </div>
     </motion.div>
   );
+
+  if (href) {
+    return <a href={href} className="block">{content}</a>;
+  }
+
+  return content;
 }

@@ -1,0 +1,14 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
+import PermissionsView from '../../components/tool-suites/protect/views/PermissionsView';
+---
+
+<Layout title="PePDF | Permission Controls" description="Limit print, copy, and edit permissions to safeguard document intent.">
+  <Navbar client:load />
+  <main>
+    <PermissionsView client:load />
+  </main>
+  <Footer client:visible />
+</Layout>
