@@ -1,0 +1,14 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
+import EncryptView from '../../components/tool-suites/protect/views/EncryptView';
+---
+
+<Layout title="PePDF | Encrypt PDF" description="Add strong password protection to restrict unauthorized opening.">
+  <Navbar client:load />
+  <main>
+    <EncryptView client:load />
+  </main>
+  <Footer client:visible />
+</Layout>

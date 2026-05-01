@@ -1,0 +1,14 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
+import UnlockView from '../../components/tool-suites/protect/views/UnlockView';
+---
+
+<Layout title="PePDF | Unlock Access" description="Remove password layers when you own the rights to modify the file.">
+  <Navbar client:load />
+  <main>
+    <UnlockView client:load />
+  </main>
+  <Footer client:visible />
+</Layout>

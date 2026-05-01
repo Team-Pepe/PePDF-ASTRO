@@ -108,7 +108,7 @@ export default function ToolSuitePage({
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {tools.map((tool, index) => (
-              <ToolCard key={tool.title} {...tool} delay={index * 0.08} />
+              <ToolCard key={tool.title} {...tool} href={tool.href} delay={index * 0.08} />
             ))}
           </div>
 

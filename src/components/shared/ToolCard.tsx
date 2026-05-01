@@ -11,28 +11,7 @@ interface ToolCardProps {
 }
 
 export default function ToolCard({ title, description, icon, color, delay = 0, href }: ToolCardProps) {
-  const handleNavigate = () => {
-    if (!href) {
-      return;
-    }
-
-    if (href.startsWith('#')) {
-      const target = document.querySelector(href);
-      target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
-
-    window.location.href = href;
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if ((event.key === 'Enter' || event.key === ' ') && href) {
-      event.preventDefault();
-      handleNavigate();
-    }
-  };
-
-  return (
+  const content = (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
@@ -81,4 +60,10 @@ export default function ToolCard({ title, description, icon, color, delay = 0, h
       </div>
     </motion.div>
   );
+
+  if (href) {
+    return <a href={href} className="block">{content}</a>;
+  }
+
+  return content;
 }
